@@ -9,7 +9,7 @@ from petstagram.photos.models import Photo
 class PhotoBaseForm(forms.ModelForm):
     class Meta:
         model = Photo
-        exclude = ['publication_date']
+        exclude = ['publication_date', 'user']
 
 
 class PhotoCreateForm(PhotoBaseForm):
@@ -19,15 +19,15 @@ class PhotoCreateForm(PhotoBaseForm):
 class PhotoEditForm(PhotoBaseForm):
     class Meta:
         model = Photo
-        exclude = ['publication_date', 'photo']
+        exclude = ['publication_date', 'photo', 'user']
 
 
 class PhotoDeleteForm(DisabledFormMixin, PhotoBaseForm):
     disabled_fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
         self._disable_fields()
+        super().__init__(*args, **kwargs)
 
     def save(self, commit=True):
         if commit:

@@ -1,7 +1,6 @@
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
-
-from petstagram.common.views import get_user_liked_photos
 from petstagram.photos.forms import PhotoCreateForm, PhotoEditForm, PhotoDeleteForm
 from petstagram.photos.models import Photo
 
@@ -18,13 +17,17 @@ def get_post_photo_form(request, form, success_url, template_path, pk=None):
     return render(request, template_path, context)
 
 
+@login_required
 def add_photo(request):
     if request.method == "GET":
         form = PhotoCreateForm()
     else:
-        form = PhotoCreateForm(request.POST, request.FILES)
+        form = PhotoCreateForm(request.POST, request.FILES, initial={'user': request.user})
         if form.is_valid():
-            photo = form.save()  # returns the object saved
+            photo = form.save(commit=False)
+            photo.user = request.user
+            photo.save()
+            form.save_m2m()
             return redirect('details photo', pk=photo.pk)
     context = {
         'form': form
@@ -34,10 +37,12 @@ def add_photo(request):
 
 def details_photo(request, pk):
     photo = Photo.objects.filter(pk=pk).get()
+    user_liked_photos = Photo.objects.filter(pk=photo.pk, user_id=request.user.pk)
     context = {
         'photo': photo,
-        'has_user_liked_photo': get_user_liked_photos(pk),
-        'likes_count': photo.photolike_set.count()
+        'has_user_liked_photo': user_liked_photos,
+        'likes_count': photo.photolike_set.count(),
+        'is_owner': request.user == photo.user
     }
     return render(request, 'photos/photo-details-page.html', context)
 

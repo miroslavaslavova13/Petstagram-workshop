@@ -16,14 +16,16 @@
                     <div class="edit">
                         <!-- Pet Name -->
                         <p>{{ pet.name }}</p>
-                        <!-- Pet Edit Button -->
-                        <a href="{% url 'edit pet' username='miroslava' pet_slug=pet.slug %}">
-                            <img class="edit-img" src="{% static 'images/edit-pen-icon-6.jpg' %}" alt="edit button">
-                        </a>
-                        <!-- Pet Delete Button -->
-                        <a href="{% url 'delete pet' username='miroslava' pet_slug=pet.slug %}">
-                            <img class="bin-img" src="{% static 'images/icon-remove-22.jpg' %}" alt="bin button">
-                        </a>
+                        {% if is_owner %}
+                            <!-- Pet Edit Button -->
+                            <a href="{% url 'edit pet' username='miroslava' pet_slug=pet.slug %}">
+                                <img class="edit-img" src="{% static 'images/edit-pen-icon-6.jpg' %}" alt="edit button">
+                            </a>
+                            <!-- Pet Delete Button -->
+                            <a href="{% url 'delete pet' username='miroslava' pet_slug=pet.slug %}">
+                                <img class="bin-img" src="{% static 'images/icon-remove-22.jpg' %}" alt="bin button">
+                            </a>
+                        {% endif %}
                     </div>
                     <div class="data">
                         <!-- Pet Total Photos -->
@@ -37,11 +39,11 @@
 
         <div class="pet-posts">
             <!-- IF Photos Start Pet Photos Post Section -->
-                <!-- Start First Pet Photo Post -->
-                {% for photo in pet_photos %}
-                    {% include 'partials/photo_item.html' with photo=photo %}
+            <!-- Start First Pet Photo Post -->
+            {% for photo in pet_photos %}
+                {% include 'partials/photo_item.html' with photo=photo %}
                 <!-- End  First Pet Photo Post -->
-                {% empty %}
+            {% empty %}
                 <!-- IF NOT Photos Show No Post Image -->
                 <img class="no-posts" src="{% static 'images/no_posts.png' %}" alt="no posts image">
             {% endfor %}

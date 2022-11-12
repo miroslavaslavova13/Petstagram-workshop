@@ -1,7 +1,10 @@
+from django.contrib.auth import get_user_model
 from django.db import models
+from django.db.models import RESTRICT
 from django.utils.text import slugify
 
 
+UserModel = get_user_model()
 class Pet(models.Model):
     MAX_NAME = 30
 
@@ -12,6 +15,8 @@ class Pet(models.Model):
     date_of_birth = models.DateField(null=True, blank=True)
 
     slug = models.SlugField(unique=True, null=False, blank=True)
+
+    user = models.ForeignKey(UserModel, on_delete=RESTRICT)
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)  # first save to take id for the slug

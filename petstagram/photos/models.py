@@ -1,8 +1,12 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
+from django.db.models import RESTRICT
 
 from petstagram.pets.models import Pet
 from petstagram.photos.validators import validate_file_less_than_5mb
+
+UserModel = get_user_model()
 
 
 class Photo(models.Model):
@@ -20,7 +24,7 @@ class Photo(models.Model):
 
     description = models.CharField(
         max_length=MAX_DESCRIPTION_LENGTH,
-        validators=(MinLengthValidator(MIN_DESCRIPTION_LENGTH), ),
+        validators=(MinLengthValidator(MIN_DESCRIPTION_LENGTH),),
         null=True,
         blank=True
     )
@@ -33,6 +37,8 @@ class Photo(models.Model):
         Pet,
         blank=True,
     )
+
+    user = models.ForeignKey(UserModel, on_delete=RESTRICT)
 
     def __str__(self):
         return f'PK: {self.pk} PHOTO:{self.photo} LOCATION:{self.location}'
