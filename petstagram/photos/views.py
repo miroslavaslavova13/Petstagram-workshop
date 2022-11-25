@@ -42,11 +42,12 @@ def details_photo(request, pk):
         'photo': photo,
         'has_user_liked_photo': user_liked_photos,
         'likes_count': photo.photolike_set.count(),
-        'is_owner': request.user == photo.user
+        'is_owner': request.user == photo.user,
     }
     return render(request, 'photos/photo-details-page.html', context)
 
 
+@login_required
 def edit_photo(request, pk):
     photo = Photo.objects.filter(pk=pk).get()
     return get_post_photo_form(
@@ -58,8 +59,10 @@ def edit_photo(request, pk):
     )
 
 
+@login_required
 def delete_photo(request, pk):
     photo = Photo.objects.filter(pk=pk).get()
+
     return get_post_photo_form(
         request,
         PhotoDeleteForm(request.POST or None, instance=photo),

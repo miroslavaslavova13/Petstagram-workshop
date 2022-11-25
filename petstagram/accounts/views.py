@@ -1,6 +1,5 @@
 from django.contrib.auth import get_user_model
 from django.contrib.auth.views import LoginView, LogoutView
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
@@ -17,7 +16,7 @@ class LogInView(LoginView):
 class RegisterView(CreateView):
     template_name = 'accounts/register-page.html'
     form_class = UserCreateForm
-    success_url = reverse_lazy('index')
+    success_url = reverse_lazy('login user')
 
 
 class LogOutView(LogoutView):
@@ -37,6 +36,7 @@ class UserDetailsView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        # self.request.user is the logged user, self.object is the selected user
         context['is_owner'] = self.request.user == self.object
         context['pets_count'] = self.object.pet_set.count()
 

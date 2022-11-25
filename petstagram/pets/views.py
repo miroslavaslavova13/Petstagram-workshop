@@ -3,7 +3,6 @@ from django.shortcuts import render, redirect
 from petstagram.core.photo_utils import apply_likes_count, apply_user_liked_photo
 from petstagram.core.utils import is_owner
 from petstagram.pets.forms import PetCreateForm, PetEditForm, PetDeleteForm
-from petstagram.pets.models import Pet
 from petstagram.pets.utils import get_pet_by_name_and_username
 
 
@@ -25,25 +24,6 @@ def add_pet(request):
     return render(request, 'pets/pet-add-page.html', context)
 
 
-def delete_pet(request, username, pet_slug):
-    pet = get_pet_by_name_and_username(pet_slug, username)
-
-    if request.method == 'GET':
-        form = PetDeleteForm(instance=pet)
-    else:
-        form = PetDeleteForm(request.POST, instance=pet)
-        if form.is_valid():
-            form.save()  # overriden the act of '.save()' in the form
-            return redirect('details user', pk=1)
-
-    context = {
-        'form': form,
-        'pet_slug': pet_slug,
-        'username': username
-    }
-    return render(request, 'pets/pet-delete-page.html', context)
-
-
 def details_pet(request, username, pet_slug):
     pet = get_pet_by_name_and_username(pet_slug, username)
 
@@ -54,13 +34,35 @@ def details_pet(request, username, pet_slug):
         'pet': pet,
         'photos_count': pet.photo_set.count(),
         'pet_photos': photos,
-        'is_owner': pet.user == request.user
+        'is_owner': pet.user == request.user,
     }
     return render(request, 'pets/pet-details-page.html', context)
 
 
+def delete_pet(request, username, pet_slug):
+    pet = get_pet_by_name_and_username(pet_slug, username)
+
+    if not is_owner(request, pet):
+        return redirect('details pet', username=username, pet_slug=pet_slug)
+
+    if request.method == 'GET':
+        form = PetDeleteForm(instance=pet)
+    else:
+        form = PetDeleteForm(request.POST, instance=pet)
+        if form.is_valid():
+            form.save()  # overriden the act of '.save()' in the form
+            return redirect('details user', pk=request.user.pk)
+
+    context = {
+        'form': form,
+        'pet_slug': pet_slug,
+        'username': username
+    }
+    return render(request, 'pets/pet-delete-page.html', context)
+
+
 def edit_pet(request, username, pet_slug):
-    pet = Pet.objects.filter(slug=pet_slug).get()
+    pet = get_pet_by_name_and_username(pet_slug, username)
 
     if not is_owner(request, pet):
         return redirect('details pet', username=username, pet_slug=pet_slug)

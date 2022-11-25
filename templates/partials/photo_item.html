@@ -17,9 +17,13 @@
                 <!-- Link to User Profile Page -->
                 <a href="{% url 'details user' pk=1 %}">
                     <!-- if user has first name and last name -->
-                    Diyan Kalaydzhiev
-                    <!-- else -->
-                    <!-- show user username -->
+                    {% if user.first_name and user.last_name %}
+                        {{ photo.user.first_name }} {{ photo.user.last_name }}
+                        <!-- else -->
+                    {% else %}
+                        <!-- show user username -->
+                        {{ photo.user.name }}
+                    {% endif %}
                 </a>
                 <br>
                 <!-- if the photo has location -->
@@ -115,7 +119,7 @@
         <!-- Start Tagged Pets -->
         <!-- Link to First Tagged Pet Details Page-->
         {% for pet in photo.tagged_pets.all %}
-            <a href="{% url 'details pet' username='miroslava' pet_slug=pet.slug %}">
+            <a href="{% url 'details pet' username=pet.user pet_slug=pet.slug %}">
                 <p class="message">
                     <b>{{ pet.name }}</b>
                 </p>

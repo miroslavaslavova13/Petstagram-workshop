@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator
 from django.db import models
 from django.db.models import RESTRICT
-
 from petstagram.pets.models import Pet
 from petstagram.photos.validators import validate_file_less_than_5mb
 

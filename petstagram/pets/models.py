@@ -3,8 +3,9 @@ from django.db import models
 from django.db.models import RESTRICT
 from django.utils.text import slugify
 
-
 UserModel = get_user_model()
+
+
 class Pet(models.Model):
     MAX_NAME = 30
 

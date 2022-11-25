@@ -2,7 +2,6 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from pyperclip import copy
-
 from petstagram.common.forms import PhotoCommentForm, SearchPhotoForm
 from petstagram.common.models import PhotoLike
 from petstagram.core.photo_utils import apply_likes_count, apply_user_liked_photo
@@ -61,6 +60,7 @@ def comment_photo(request, photo_id):
     if form.is_valid():
         comment = form.save(commit=False)  # set the comment without setting it in DB and returns object
         comment.photo = photo
+        comment.user = request.user
         comment.save()
 
     return redirect('index')

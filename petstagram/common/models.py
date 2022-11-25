@@ -1,10 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
 from django.db.models import RESTRICT
-
 from petstagram.photos.models import Photo
 
 UserModel = get_user_model()
+
 
 class PhotoComment(models.Model):
     MAX_TEXT_LENGTH = 300

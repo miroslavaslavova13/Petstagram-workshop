@@ -10,6 +10,7 @@ UserModel = get_user_model()
 
 @admin.register(UserModel)
 class PetstagramUserAdmin(UserAdmin):
+    # to show all thing from model in administration site
     form = UserChangeForm
     add_form = UserCreateForm
     fieldsets = (
