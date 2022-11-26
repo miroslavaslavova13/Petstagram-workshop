@@ -69,7 +69,7 @@
                 <!-- Start Pet Photo -->
                 <div class="imgBx" id="{{ photo.pk }}">
                     <!-- Pet Photo -->
-                    <img src="/media/{{ photo.photo }}" alt="photo of the pets {{ photo.tagged_pets.all|join:', ' }}"
+                    <img src="{{ photo.photo.url }}" alt="photo of the pets {{ photo.tagged_pets.all|join:', ' }}"
                          class="cover">
                 </div>
                 <!-- End Pet Photo -->
@@ -82,11 +82,9 @@
 
                             <!-- Start Like Button -->
                             <span class="heart">
-
-                                    <!-- Link to Like Path -->
 									<a href="{% url 'like photo' photo_id=photo.pk %}">
-                                        {% if has_user_liked_photo %}
-                                            <!-- IF user has liked the photo -->
+										<!-- if user has liked the photo -->
+                                        {% if photo.is_liked_by_user %}
                                             <svg style="color: red"
                                                  xmlns="http://www.w3.org/2000/svg"
                                                  width="24"
@@ -99,11 +97,11 @@
                                                   d="M8 1.314C12.438-3.248 23.534 4.735
                                                   8 15-7.534 4.736 3.562-3.248 8 1.314z"
                                                   fill="red">
+
                                             </path>
                                         </svg>
 
                                         {% else %}
-                                            <!-- IF NOT user has liked the photo -->
                                             <svg aria-label="Like"
                                                  color="#262626"
                                                  fill="#262626"
@@ -125,11 +123,11 @@
                                                     7.8-6.8l2-1.8c.7-.6 1.3-1.2 2-1.7C42.7 29.6
                                                     48 25 48 17.6c0-8-6-14.5-13.4-14.5z">
                                         </path>
-                                        </svg>
-                                            </a>
-                                            </span>
-                                            <!-- End Like Button -->
+                                    </svg>
                                         {% endif %}
+								</a>
+								</span>
+                            <!-- End Like Button -->
 
                             <!-- Start Share  Button -->
 
@@ -168,33 +166,35 @@
                     <h5 class="postTime">{{ photo.publication_date }}</h5>
 
                     <!-- Start Comments Section -->
-                    <div class="comments">
-                        <div class="top">
-                            <div class="userDetails">
-                                <div class="comment-data">
-                                    <div class="profilepic">
-                                        <div class="profile_img">
-                                            <div class="image">
-                                                <!-- User Profile Image -->
-                                                <img src="{% static 'images/person.png' %}" alt="img8">
+                    {% for comment in photo.photocomment_set.all %}
+                        <div class="comments">
+                            <div class="top">
+                                <div class="userDetails">
+                                    <div class="comment-data">
+                                        <div class="profilepic">
+                                            <div class="profile_img">
+                                                <div class="image">
+                                                    <!-- User Profile Image -->
+                                                    <img src="{% static 'images/person.png' %}" alt="img8">
+                                                </div>
                                             </div>
                                         </div>
+                                        <p>
+                                            <!-- Link to User Profile Details Page-->
+                                            <!-- User First and/or Last Name or username-->
+                                            <a href="{% url 'details user' pk=comment.user.pk %}">{{ comment.user }}</a>
+                                            <!-- User Comment -->
+                                            {{ comment.text }}
+                                        </p>
                                     </div>
-                                    <p>
-                                        <!-- Link to User Profile Details Page-->
-                                        <!-- User First and/or Last Name or username-->
-                                        <a href="">Steven Ivanov</a>
-                                        <!-- User Comment -->
-                                        - OMG where can i get one
-                                    </p>
+
+                                    <span>{{ comment.publication_date }}</span>
                                 </div>
-                                <span>Sept. 20, 2022, 5:02 p.m.</span>
                             </div>
                         </div>
-                    </div>
-                    <!-- End Comments Section -->
-                </div>
-
+                        <!-- End Comments Section -->
+                        </div>
+                    {% endfor %}
                 <!-- Start Add Comments Section -->
                 <div class="addComments">
                     <div class="reaction">

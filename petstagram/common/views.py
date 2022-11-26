@@ -26,7 +26,7 @@ def index(request):
     context = {
         'photos': photos,
         'comment_form': PhotoCommentForm(),
-        'search_form': search_form
+        'search_form': search_form,
     }
     return render(request, 'common/home-page.html', context)
 

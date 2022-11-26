@@ -4,7 +4,7 @@
     <div class="top">
         <div class="userDetails">
             <!-- Link to User Profile Page -->
-            <a href="{% url 'details user' pk=1 %}">
+            <a href="{% url 'details user' pk=photo.user.pk %}">
                 <div class="profilepic">
                     <div class="profile_img">
                         <div class="image">
@@ -15,15 +15,16 @@
             </a>
             <h3>
                 <!-- Link to User Profile Page -->
-                <a href="{% url 'details user' pk=1 %}">
+                <a href="{% url 'details user' pk=photo.user.pk %}">
                     <!-- if user has first name and last name -->
-                    {% if user.first_name and user.last_name %}
-                        {{ photo.user.first_name }} {{ photo.user.last_name }}
-                        <!-- else -->
+                    {% if  photo.user.get_full_name %}
+                        {{ photo.user.get_full_name }}
                     {% else %}
-                        <!-- show user username -->
-                        {{ photo.user.name }}
+                        {{ photo.user.username }}
+
                     {% endif %}
+
+
                 </a>
                 <br>
                 <!-- if the photo has location -->
@@ -37,7 +38,7 @@
 
     <!-- Start Pet Photo -->
     <div class="imgBx" id="photo-{{ photo.pk }}">
-        <img src="/media/{{ photo.photo }}" alt="some text" class="cover">
+        <img src="{{ photo.photo.url }}" alt="some text" class="cover">
     </div>
     <!-- End Pet Photo -->
 
@@ -151,7 +152,7 @@
                             </div>
                             <p> <!-- Link to User Profile Details Page-->
                                 <!-- User First and/or Last Name or username-->
-                                <a href="">Steven Ivanov</a>
+                                <a href="{% url 'details user' pk=comment.user.pk %}">{{ comment.user }}</a>
                                 <!-- User Comment -->
                                 {{ comment.text }}
                             </p>

@@ -1,5 +1,6 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.views import LoginView, LogoutView
+from django.core.paginator import Paginator
 from django.urls import reverse_lazy
 from django.views.generic import CreateView, DetailView, UpdateView, DeleteView
 
@@ -16,7 +17,14 @@ class LogInView(LoginView):
 class RegisterView(CreateView):
     template_name = 'accounts/register-page.html'
     form_class = UserCreateForm
-    success_url = reverse_lazy('login user')
+    success_url = reverse_lazy('index')
+
+    def post(self, request, *args, **kwargs):
+        response = super().post(request, *args, **kwargs)
+
+        login(request, self.object)
+
+        return response
 
 
 class LogOutView(LogoutView):
@@ -33,6 +41,20 @@ class UserDetailsView(DetailView):
     template_name = 'accounts/profile-details-page.html'
     model = UserModel
 
+    photos_paginate_by = 2
+
+    def get_photos_page(self):
+        return self.request.GET.get('page', 1)
+
+    def get_paginated_photos(self):
+        page = self.get_photos_page()
+        photos = self.object.photo_set.order_by('-publication_date')
+
+        paginator = Paginator(photos, self.photos_paginate_by)
+
+        return paginator.get_page(page)
+
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
@@ -44,6 +66,8 @@ class UserDetailsView(DetailView):
 
         context['photos_count'] = photos.count()
         context['likes_count'] = sum(x.photolike_set.count() for x in photos)
+
+        context['photos'] = self.get_paginated_photos()
 
         return context
 

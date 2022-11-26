@@ -37,7 +37,8 @@ def add_photo(request):
 
 def details_photo(request, pk):
     photo = Photo.objects.filter(pk=pk).get()
-    user_liked_photos = Photo.objects.filter(pk=photo.pk, user_id=request.user.pk)
+    user_liked_photos = Photo.objects.filter(pk=pk, user_id=request.user.pk)
+
     context = {
         'photo': photo,
         'has_user_liked_photo': user_liked_photos,
