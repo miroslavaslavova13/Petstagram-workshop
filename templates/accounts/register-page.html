@@ -9,14 +9,16 @@
 
             <!-- Start Register Form -->
             <form method="post" action="{% url 'register user' %}">
-                {{ form.username.errors }}
+
                 {{ form.username|placeholder:'Username: ' }}
-                {{ form.email.errors }}
+                {{ form.username.errors }}
                 {{ form.email|placeholder:'Email: ' }}
-                {{ form.password1.errors }}
+                {{ form.email.errors }}
                 {{ form.password1|placeholder:'Password: ' }}
-                {{ form.password2.errors }}
+                {{ form.password1.errors }}
                 {{ form.password2|placeholder:'Repeat password: ' }}
+                {{ form.password2.errors }}
+
 
                 <!-- Register Button -->
                 <button type="submit">Register</button>
